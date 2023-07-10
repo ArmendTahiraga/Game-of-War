@@ -1,6 +1,3 @@
-let deckId;
-let computerScore = 0;
-let myScore = 0;
 const cardsContainer = document.getElementById("cards");
 const newDeckBtn = document.getElementById("new-deck");
 const drawCardBtn = document.getElementById("draw-cards");
@@ -8,19 +5,24 @@ const header = document.getElementById("header");
 const remainingText = document.getElementById("remaining");
 const computerScoreEl = document.getElementById("computer-score");
 const myScoreEl = document.getElementById("my-score");
+let deckId;
+let computerScore = 0;
+let myScore = 0;
+
+drawCardBtn.disabled = true;
 
 function handleClick() {
 	fetch("https://apis.scrimba.com/deckofcards/api/deck/new/shuffle/")
 		.then((res) => res.json())
 		.then((data) => {
-			remainingText.textContent = `Remaining cards: ${data.remaining}`;
 			deckId = data.deck_id;
-			console.log(deckId);
 			drawCardBtn.disabled = false;
 			computerScore = 0;
 			myScore = 0;
+
+			remainingText.textContent = `Remaining cards: ${data.remaining}`;
 			computerScoreEl.textContent = `Computer score: ${computerScore}`;
-			myScoreEl.textContent = `My score: ${myScore}`;
+			myScoreEl.textContent = `Your score: ${myScore}`;
 			header.textContent = "Game of War!";
 		});
 }
@@ -38,6 +40,7 @@ drawCardBtn.addEventListener("click", () => {
 			cardsContainer.children[1].innerHTML = `
                 <img src=${data.cards[1].image} class="card" />
             `;
+
 			const winnerText = determineCardWinner(data.cards[0], data.cards[1]);
 			header.textContent = winnerText;
 
@@ -65,7 +68,7 @@ function determineCardWinner(card1, card2) {
 		return "Computer wins!";
 	} else if (card1ValueIndex < card2ValueIndex) {
 		myScore++;
-		myScoreEl.textContent = `My score: ${myScore}`;
+		myScoreEl.textContent = `Your score: ${myScore}`;
 		return "You win!";
 	} else {
 		return "War!";
